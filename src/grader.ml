@@ -1,15 +1,7 @@
 open Common
 
-module Yaml = struct
-  include Yaml
-  include Yaml.Util
-
-  let to_obj_exn = function
-    | `O l -> l
-    | _ -> assert false
-end
-
 let () =
+  Printexc.record_backtrace true;
   let conf = ref "" in
   let files = ref [] in
   Arg.parse
@@ -30,13 +22,5 @@ let () =
     s
   in
   let conf = Yaml.of_string_exn conf in
-  let assignment =
-    let a = Assignment.create () in
-    let conf = Yaml.to_obj_exn conf in
-    List.iter (fun (k,v) ->
-        match k with
-        | "name" -> a.name <- Yaml.to_string_exn v
-        | k -> warning "Unhandled key: %s" k
-      ) conf
-  in
+  let assignment = Assignment.of_yaml conf in
   ignore assignment
