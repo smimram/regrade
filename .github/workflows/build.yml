@@ -10,7 +10,7 @@ jobs:
       run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc
     - name: Install yaml
       run: |
-        sudo apt-get -y install libctypes-ocaml-dev libppx-sexp-conv-ocaml-dev libbos-ocaml-dev 
+        sudo apt-get -y install libctypes-ocaml-dev libppx-sexp-conv-ocaml-dev libbos-ocaml-dev libsexplib-ocaml-dev libdune-ocaml-dev 
         git clone https://github.com/avsm/ocaml-yaml.git
         cd ocaml-yaml
         make
