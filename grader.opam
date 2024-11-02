@@ -8,6 +8,7 @@ homepage: "https://github.com/smimram/grader"
 bug-reports: "https://github.com/smimram/grader/issues"
 depends: [
   "dune" {>= "2.9"}
+  "yaml"
   "odoc" {with-doc}
 ]
 build: [
