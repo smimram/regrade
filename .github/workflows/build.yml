@@ -10,6 +10,7 @@ jobs:
       run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc
     - name: Install yaml
       run: |
+        sudo apt-get -y install libctypes-ocaml-dev libppx-sexp-conv-ocaml-dev libbos-ocaml-dev 
         git clone https://github.com/avsm/ocaml-yaml.git
         cd ocaml-yaml
         make
@@ -20,20 +21,20 @@ jobs:
       run: dune runtest
     - name: Build doc
       run: make -C docs && rm -f docs/.gitignore
-    - name: Upload website artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: docs
-  deploy:
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy website
-        id: deployment
-        uses: actions/deploy-pages@v2
+    # - name: Upload website artifact
+      # uses: actions/upload-pages-artifact@v2
+      # with:
+        # path: docs
+  # deploy:
+    # needs: build
+    # permissions:
+      # pages: write
+      # id-token: write
+    # environment:
+      # name: github-pages
+      # url: ${{ steps.deployment.outputs.page_url }}
+    # runs-on: ubuntu-latest
+    # steps:
+      # - name: Deploy website
+        # id: deployment
+        # uses: actions/deploy-pages@v2
