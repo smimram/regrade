@@ -5,21 +5,30 @@ open Common
 module Question = struct
   type t =
     {
+      name : string;
       grep : string;
       points : float;
     }
 
+  let fresh_name =
+    let n = ref 0 in
+    fun () ->
+      incr n;
+      "Q" ^ string_of_int !n
+
   let of_yaml yaml =
+    let name = ref (fresh_name ()) in
     let grep = ref "" in
     let points = ref 1. in
     let yaml = Yaml.to_obj_exn yaml in
     List.iter (fun (k,v) ->
         match k with
+        | "name" -> name := Yaml.to_string_exn v
         | "grep" -> grep := Yaml.to_string_exn v
         | "points" -> points := Yaml.to_float_exn v
         | k -> warning "Unhandled key in question: %s" k
       ) yaml;
-    { grep = !grep; points = !points }
+    { name = !name; grep = !grep; points = !points }
 end
 
 type t =
