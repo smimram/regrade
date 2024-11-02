@@ -21,7 +21,7 @@ jobs:
     - name: Test
       run: dune runtest
     - name: Build doc
-      run: make -C docs && rm -f docs/.gitignore
+      run: dune build @doc
     # - name: Upload website artifact
       # uses: actions/upload-pages-artifact@v2
       # with:
