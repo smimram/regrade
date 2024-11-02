@@ -33,12 +33,14 @@ module Question = struct
   let points q = q.points
 end
 
+module Q = Question
+
 type t =
   {
     name : string;
     points : float;
     coefficient : float;
-    questions : Question.t list;
+    questions : Q.t list;
   }
 
 let of_yaml yaml =
@@ -52,7 +54,7 @@ let of_yaml yaml =
       | "name" -> name := Yaml.to_string_exn v
       | "points" -> points := Yaml.to_float_exn v
       | "coefficient" -> coefficient := Some (Yaml.to_float_exn v)
-      | "questions" -> questions := List.map Question.of_yaml (Yaml.to_list_exn v)
+      | "questions" -> questions := List.map Q.of_yaml (Yaml.to_list_exn v)
       | k -> warning "Unhandled key: %s" k
     ) yaml;
   let questions = !questions in
@@ -61,7 +63,7 @@ let of_yaml yaml =
     match !coefficient with
     | Some c -> c
     | None ->
-      let n = List.map Question.points questions |> List.fold_left (+.) 0. in
+      let n = List.map Q.points questions |> List.fold_left (+.) 0. in
       points /. n
   in
   {
@@ -70,3 +72,9 @@ let of_yaml yaml =
     coefficient;
     questions;
   }
+
+let name a = a.name
+
+let points a = a.points
+
+let coefficient a = a.coefficient

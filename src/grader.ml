@@ -1,5 +1,7 @@
 open Common
 
+module A = Assignment
+
 let () =
   Printexc.record_backtrace true;
   let conf = ref "" in
@@ -22,5 +24,5 @@ let () =
     s
   in
   let conf = Yaml.of_string_exn conf in
-  let assignment = Assignment.of_yaml conf in
-  ignore assignment
+  let a = A.of_yaml conf in
+  info "Loaded %s (%.02f points, %.02f coef)" (A.name a) (A.points a) (A.coefficient a)
