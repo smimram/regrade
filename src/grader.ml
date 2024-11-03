@@ -36,10 +36,12 @@ let () =
                 if Str.string_match_forward regexp f 0 then q.A.Q.points else 0.
              ) a.A.questions
          in
-         fname::(List.map string_of_float q)
+         let grade = A.coefficient a *. List.fold_left (+.) 0. q in
+         let grade = string_of_float grade in
+         fname::grade::(List.map string_of_float q)
       ) !files
   in
-  let rows = ("File"::(List.map A.Q.name (A.questions a)))::rows in
+  let rows = ("File"::"Grade"::(List.map A.Q.name (A.questions a)))::rows in
   let out =
     let buf = Buffer.create 0 in 
     let oc = CSV.to_buffer buf in
