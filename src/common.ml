@@ -17,3 +17,11 @@ module CSV = struct
     Stdlib.close_in f;
     List.map Row.to_list c
 end
+
+module Str = struct
+  include Str
+
+  let string_match_forward regexp s off =
+    try ignore (search_forward regexp s off); true
+    with Not_found -> false
+end

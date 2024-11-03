@@ -33,7 +33,7 @@ let () =
            List.map
              (fun q ->
                 let regexp = q.A.Q.regexp in
-                if Str.string_match regexp f 0 then q.A.Q.points else 0.
+                if Str.string_match_forward regexp f 0 then q.A.Q.points else 0.
              ) a.A.questions
          in
          fname::(List.map string_of_float q)
