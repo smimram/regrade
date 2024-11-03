@@ -47,4 +47,7 @@ let () =
     Buffer.contents buf
   in
   print_newline ();
-  print_string out
+  print_string out;
+  let oc = open_out "grades.csv" in
+  output_string oc out;
+  close_out oc
