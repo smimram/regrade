@@ -1,4 +1,5 @@
 (lang dune 2.9)
+(name grader)
 (version 0.1.0)
 (source (github smimram/grader))
 (authors "Samuel Mimram <smimram@gmail.com>")
