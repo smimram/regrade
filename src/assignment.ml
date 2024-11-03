@@ -38,7 +38,7 @@ let of_csv rows =
       | ["coefficient"; v] -> coefficient := Some (float_of_string v)
       | "question"::l -> question := l
       | "regexp"::l -> regexp := List.map Str.regexp l
-      | "points"::l -> points := List.map float_of_string l
+      | "points"::l -> points := List.map (fun x -> if x = "" then 1. else float_of_string x) l
       | k::_ -> warning "Unhandled row: %s" k
       | [] -> ()
     ) rows;
