@@ -2,3 +2,8 @@
  (public_name grader)
  (libraries str csv)
 )
+
+(rule
+ (alias runtest)
+ (action (run ./grader.exe --extension ml test.csv))
+)

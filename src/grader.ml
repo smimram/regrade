@@ -20,7 +20,10 @@ let () =
   let extension = !extension in
   let files = List.rev !files in
   let files =
-    if files = [] then Sys.readdir "." |> Array.to_list |> List.filter Sys.is_directory |> List.sort compare
+    if files = [] then
+      let l = Sys.readdir "." |> Array.to_list |> List.sort compare in
+      let l = match extension with Some ext -> List.filter (fun f -> try Sys.is_directory f || String.ends_with ~suffix:ext f with Sys_error _ -> false) l | None -> l in
+      l
     else files
   in
   if csv = "" then error "Please provide a configuration file.";
