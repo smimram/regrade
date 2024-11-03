@@ -31,6 +31,7 @@ let () =
   let rows =
     List.map
       (fun fname ->
+         info "Grading %s" fname;
          let files =
            if Sys.is_directory fname then File.find ?extension fname
            else [fname]
