@@ -9,6 +9,6 @@
  (synopsis "Automatic homework grader")
  (description "Simple grading system.")
  (depends
-   yaml
+   csv
  )
 )

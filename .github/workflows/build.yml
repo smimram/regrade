@@ -7,15 +7,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - name: Install required packages
-      run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc
-    - name: Install yaml
-      run: |
-        cd /tmp
-        sudo apt-get -y install libctypes-ocaml-dev libppx-sexp-conv-ocaml-dev libbos-ocaml-dev libsexplib-ocaml-dev libdune-ocaml-dev 
-        git clone https://github.com/avsm/ocaml-yaml.git
-        cd ocaml-yaml
-        make
-        sudo make install
+      run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc libcsv-ocaml-dev
     - name: Build
       run: dune build
     - name: Test

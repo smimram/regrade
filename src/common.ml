@@ -7,17 +7,13 @@ let warning fmt =
 let info fmt =
   Printf.ksprintf (fun s -> Printf.printf "[II] %s\n%!" s) fmt
 
-module Yaml = struct
-  include Yaml
-  include Yaml.Util
+module CSV = struct
+  include Csv
 
-  let to_list_exn = function
-    | `A l -> l
-    | _ -> assert false
-
-  let to_obj_exn = function
-    | `O l -> l
-    | _ -> assert false
-
-  let to_int_exn v = to_float_exn v |> int_of_float
+  let of_file f =
+    let f = open_in f in
+    let c = of_channel f in
+    let c = Rows.input_all c in
+    Stdlib.close_in f;
+    List.map Row.to_list c
 end

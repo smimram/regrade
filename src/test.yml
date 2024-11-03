@@ -1,5 +1,0 @@
-name: "Test"
-questions:
-  - grep: "bla"
-    points: 2
-  - grep: "bli"
