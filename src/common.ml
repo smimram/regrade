@@ -18,6 +18,14 @@ module CSV = struct
     List.map Row.to_list c
 end
 
+module File = struct
+  let contents fname =
+    let f = open_in fname in
+    let s = really_input_string f (in_channel_length f) in
+    close_in f;
+    s
+end
+
 module Str = struct
   include Str
 

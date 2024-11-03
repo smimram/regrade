@@ -23,12 +23,7 @@ let () =
   let rows =
     List.map
       (fun fname ->
-         let f =
-           let f = open_in fname in
-           let s = really_input_string f (in_channel_length f) in
-           close_in f;
-           s
-         in
+         let f = File.contents fname in
          let q =
            List.map
              (fun q ->
