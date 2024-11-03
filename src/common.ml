@@ -43,6 +43,7 @@ module File = struct
       | Some ext -> List.filter (String.ends_with ~suffix:ext ) l
       | None -> l
     in
+    let l = List.sort compare l in
     l
 end
 

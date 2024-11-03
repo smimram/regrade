@@ -20,7 +20,7 @@ let () =
   let extension = !extension in
   let files = List.rev !files in
   let files =
-    if files = [] then Sys.readdir "." |> Array.to_list |> List.filter Sys.is_directory
+    if files = [] then Sys.readdir "." |> Array.to_list |> List.filter Sys.is_directory |> List.sort compare
     else files
   in
   if csv = "" then error "Please provide a configuration file.";
