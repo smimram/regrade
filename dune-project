@@ -1,4 +1,5 @@
 (lang dune 2.9)
+(version 0.1.0)
 (source (github smimram/grader))
 (authors "Samuel Mimram <smimram@gmail.com>")
 (license GPL-3.0)
