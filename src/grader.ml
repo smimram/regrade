@@ -19,6 +19,10 @@ let () =
   let csv = !csv in
   let extension = !extension in
   let files = List.rev !files in
+  let files =
+    if files = [] then Sys.readdir "." |> Array.to_list |> List.filter Sys.is_directory
+    else files
+  in
   if csv = "" then error "Please provide a configuration file.";
   info "Reading %s" csv;
   let csv = CSV.of_file csv in
