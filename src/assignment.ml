@@ -32,15 +32,18 @@ let of_csv rows =
   let question = ref [] in
   let regexp = ref [] in
   let points = ref [] in
-  List.iter (function
-      | ["name"; v] -> name := v
-      | ["maximum"; v] -> maximum := float_of_string v
-      | ["coefficient"; v] -> coefficient := Some (float_of_string v)
-      | "question"::l -> question := l
-      | "regexp"::l -> regexp := List.map Str.regexp l
-      | "points"::l -> points := List.map (fun x -> if x = "" then 1. else float_of_string x) l
-      | k::_ -> warning "Unhandled row: %s" k
+  List.iter
+    (function
       | [] -> ()
+      | k::l ->
+        match k with
+        | "name" -> name := List.hd l
+        | "maximum" -> maximum := float_of_string (List.hd l)
+        | "coefficient" -> coefficient := Some (float_of_string (List.hd l))
+        | "question" -> question := l
+        | "regexp" -> regexp := List.map Str.regexp l
+        | "points" -> points := List.map (fun x -> if x = "" then 1. else float_of_string x) l
+        | k -> warning "Unhandled row: %s" k
     ) rows;
   let name = !name in
   let n = List.length !question in
