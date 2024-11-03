@@ -25,8 +25,9 @@ let () =
   in
   if csv = "" then error "Please provide a configuration file.";
   info "Reading %s" csv;
+  let name = Filename.basename csv |> Filename.remove_extension in
   let csv = CSV.of_file csv in
-  let a = A.of_csv csv in
+  let a = A.of_csv ~name csv in
   info "Loaded %s (%.02f points, %.02f coef)" (A.name a) (A.maximum a) (A.coefficient a);
   let rows =
     List.map

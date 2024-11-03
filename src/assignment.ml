@@ -25,8 +25,8 @@ type t =
     questions : Q.t list;
   }
 
-let of_csv rows =
-  let name = ref "" in
+let of_csv ?(name="") rows =
+  let name = ref name in
   let maximum = ref 20. in
   let coefficient = ref None in
   let question = ref [] in
