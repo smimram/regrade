@@ -6,10 +6,12 @@ module Question = struct
   type t =
     {
       name : string;
-      grep : string;
+      regexp : Str.regexp;
       points : float;
     }
 
+  let name q = q.name
+  
   let points q = q.points
 end
 
@@ -28,14 +30,14 @@ let of_csv rows =
   let maximum = ref 20. in
   let coefficient = ref None in
   let question = ref [] in
-  let grep = ref [] in
+  let regexp = ref [] in
   let points = ref [] in
   List.iter (function
       | ["name"; v] -> name := v
       | ["maximum"; v] -> maximum := float_of_string v
       | ["coefficient"; v] -> coefficient := Some (float_of_string v)
       | "question"::l -> question := l
-      | "grep"::l -> grep := l
+      | "regexp"::l -> regexp := List.map Str.regexp l
       | "points"::l -> points := List.map float_of_string l
       | k::_ -> warning "Unhandled row: %s" k
       | [] -> ()
@@ -45,11 +47,11 @@ let of_csv rows =
   let points = List.append !points (List.init (n - List.length !points) (fun _ -> 1.)) in
   let questions =
     let rec aux = function
-      | q::q', g::g', p::p' -> { Q.name = q; grep = g; points = p } :: aux (q', g', p')
+      | q::q', g::g', p::p' -> { Q.name = q; regexp = g; points = p } :: aux (q', g', p')
       | [], [], [] -> []
       | _ -> assert false
     in
-    aux (!question, !grep, points)
+    aux (!question, !regexp, points)
   in
   let maximum = !maximum in
   let coefficient =
@@ -66,3 +68,5 @@ let name a = a.name
 let maximum a = a.maximum
 
 let coefficient a = a.coefficient
+
+let questions q = q.questions

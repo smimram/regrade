@@ -1,4 +1,4 @@
 (executable
  (public_name grader)
- (libraries csv)
+ (libraries str csv)
 )
