@@ -24,6 +24,26 @@ module File = struct
     let s = really_input_string f (in_channel_length f) in
     close_in f;
     s
+
+  let rec find ?(recursive=true) ?extension dir =
+    let l = Sys.readdir dir |> Array.to_list |> List.map (fun f -> if dir = "." then f else Filename.concat dir f) in
+    let l =
+      if recursive then
+        List.map
+          (fun f ->
+             if Sys.is_directory f then
+               find ~recursive f
+             else [f]
+          ) l |> List.flatten
+      else
+        List.filter (fun f -> not (Sys.is_directory f)) l
+    in
+    let l =
+      match extension with
+      | Some ext -> List.filter (String.ends_with ~suffix:ext ) l
+      | None -> l
+    in
+    l
 end
 
 module Str = struct
