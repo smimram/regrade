@@ -6,15 +6,19 @@ let () =
   Printexc.record_backtrace true;
   let csv = ref "" in
   let files = ref [] in
+  let extension = ref None in
   Arg.parse
-    []
+    [
+      "--extension", Arg.String (fun s -> extension := Some s), "Extension of files to consider."
+    ]
     (fun s ->
        if !csv = "" then csv := s
        else files := s :: !files
     )
     "grader configuration files";
   let csv = !csv in
-  (* let files = List.rev !files in *)
+  let extension = !extension in
+  let files = List.rev !files in
   if csv = "" then error "Please provide a configuration file.";
   info "Reading %s" csv;
   let csv = CSV.of_file csv in
@@ -23,7 +27,11 @@ let () =
   let rows =
     List.map
       (fun fname ->
-         let f = File.contents fname in
+         let files =
+           if Sys.is_directory fname then File.find ?extension fname
+           else [fname]
+         in
+         let f = List.map File.contents files |> String.concat "\n" in
          let q =
            List.map
              (fun q ->
@@ -34,7 +42,7 @@ let () =
          let grade = A.coefficient a *. List.fold_left (+.) 0. q in
          let grade = string_of_float grade in
          fname::grade::(List.map string_of_float q)
-      ) !files
+      ) files
   in
   let rows = ("File"::"Grade"::(List.map A.Q.name (A.questions a)))::rows in
   let out =
