@@ -6,6 +6,7 @@ The correction is specified by a csv file of the form
 
 ```csv
 name,Test
+maximum,10
 question,Q1,Q2,Q3
 regexp,module,bla,\(if\|and\)
 points,,2,3
@@ -14,6 +15,7 @@ points,,2,3
 where the signification of the lines is the following
 
 - `name`: name of the exam,
+- `maximum`: maximum grade (20 if not specified),
 - `question`: name of each question,
 - `regexp`: regexp for correcting each question,
 - `points`: number of points for each question (1 if not specified).
