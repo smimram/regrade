@@ -79,7 +79,7 @@ let () =
              match row with
              | name::_grade::grades ->
                let n = List.length grades in
-               let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2);0.5)" (A.maximum a |> string_of_float) (CSV.column (n+2)) (i+3) (CSV.column (n+2)) (i+3) in
+               let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2);0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
                name::grade::grades
              | _ -> assert false
