@@ -53,7 +53,8 @@ let () =
          fname::grade::(List.map string_of_float q)
       ) files
   in
-  let rows = ("File"::"Grade"::(List.map A.Q.name (A.questions a)))::rows in
+  let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
+  let rows = header::rows in
   let out =
     let buf = Buffer.create 0 in 
     let oc = CSV.to_buffer buf in
