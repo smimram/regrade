@@ -1,9 +1,9 @@
 (executable
- (public_name grader)
+ (public_name regrade)
  (libraries str csv)
 )
 
 (rule
  (alias runtest)
- (action (run ./grader.exe --extension ml test.csv))
+ (action (run ./regrade.exe --extension ml test.csv))
 )

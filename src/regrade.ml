@@ -19,7 +19,7 @@ let () =
        if !csv = "" then csv := s
        else files := s :: !files
     )
-    "grader configuration files";
+    "regrade configuration files";
   let csv = !csv in
   let extension = !extension in
   let files = List.rev !files in

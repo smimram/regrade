@@ -2,11 +2,11 @@
 opam-version: "2.0"
 version: "0.1.0"
 synopsis: "Automatic homework grader"
-description: "Simple grading system."
+description: "Simple grading system based on regular expressions."
 authors: ["Samuel Mimram <smimram@gmail.com>"]
 license: "GPL-3.0"
-homepage: "https://github.com/smimram/grader"
-bug-reports: "https://github.com/smimram/grader/issues"
+homepage: "https://github.com/smimram/regrade"
+bug-reports: "https://github.com/smimram/regrade/issues"
 depends: [
   "dune" {>= "2.9"}
   "csv"
@@ -28,4 +28,4 @@ build: [
   ]
   ["dune" "install" "-p" name "--create-install-files" name]
 ]
-dev-repo: "git+https://github.com/smimram/grader.git"
+dev-repo: "git+https://github.com/smimram/regrade.git"
