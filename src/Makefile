@@ -1,4 +1,4 @@
 all: test
 
 test:
-	@dune exec ./grader.exe -- test.csv --extension ml
+	@dune exec ./grader.exe -- test.csv --extension ml --formulas && cat grades.csv

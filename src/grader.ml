@@ -7,9 +7,13 @@ let () =
   let csv = ref "" in
   let files = ref [] in
   let extension = ref None in
+  let formulas = ref false in
+  let outfile = ref "grades.csv" in
   Arg.parse
     [
-      "--extension", Arg.String (fun s -> extension := Some s), "Extension of files to consider."
+      "--extension", Arg.String (fun s -> extension := Some s), "Extension of files to consider.";
+      "--formulas", Arg.Set formulas, "Create a csv with formulas.";
+      "-o", Arg.Set_string outfile, "Output file.";
     ]
     (fun s ->
        if !csv = "" then csv := s
@@ -57,11 +61,23 @@ let () =
   let out = CSV.to_string (header::rows) in
   print_newline ();
   print_string out;
-  File.write "grades.csv" out;
-  (*
-  (* Grades with formulas. *)
-  begin
-    let coefficients = ""::(A.coefficient a |> string_of_float)::(List.map A.Q.points (A.questions a) |> List.map string_of_float) in
-    CSV.to_string (header::coefficients::rows) |> File.write "grades-formulas.csv"
-  end
-  *)
+  let out =
+    if not !formulas then out
+    else
+      (* Grades with formulas. *)
+      let coefficients = ""::(A.coefficient a |> string_of_float)::(List.map A.Q.points (A.questions a) |> List.map string_of_float) in
+      let rows =
+        List.mapi
+          (fun i row ->
+             match row with
+             | name::_grade::grades ->
+               let n = List.length grades in
+               let grade = Printf.sprintf "=SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2" (CSV.column (n+2)) (i+3) (CSV.column (n+2)) (i+3) in
+               let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
+               name::grade::grades
+             | _ -> assert false
+          ) rows
+      in
+      CSV.to_string (header::coefficients::rows)
+  in
+  File.write !outfile out

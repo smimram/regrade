@@ -10,6 +10,10 @@ let info fmt =
 module CSV = struct
   include Csv
 
+  let row i = i+1
+
+  let column i = (int_of_char 'A' + i) |> char_of_int |> String.make 1
+
   let of_file f =
     let f = open_in f in
     let c = of_channel f in
