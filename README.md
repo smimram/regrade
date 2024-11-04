@@ -26,4 +26,6 @@ You can then run a command of the form
 regrade exam.csv file1 file file3
 ```
 
-and it will grade the various files, outputting the results in `grades.csv`. If a folder is given instead of a file, all the file it contains are considered as one homework.
+and it will grade the various files, outputting the results in `grades.csv`. If a folder is given instead of a file, all the files it contains are considered as one homework.
+
+When using the `--formulas` flag, a csv containing Excel formulas will be generated (so that the coefficients can easily be modified).
