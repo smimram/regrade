@@ -16,6 +16,12 @@ module CSV = struct
     let c = Rows.input_all c in
     Stdlib.close_in f;
     List.map Row.to_list c
+
+  let to_string rows =
+    let buf = Buffer.create 0 in
+    let oc = to_buffer buf in
+    output_all oc rows;
+    Buffer.contents buf
 end
 
 module File = struct
@@ -45,6 +51,11 @@ module File = struct
     in
     let l = List.sort compare l in
     l
+
+  let write fname s =
+    let oc = open_out fname in
+    output_string oc s;
+    close_out oc
 end
 
 module Str = struct

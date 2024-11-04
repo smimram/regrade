@@ -54,15 +54,14 @@ let () =
       ) files
   in
   let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
-  let rows = header::rows in
-  let out =
-    let buf = Buffer.create 0 in 
-    let oc = CSV.to_buffer buf in
-    CSV.output_all oc rows;
-    Buffer.contents buf
-  in
+  let out = CSV.to_string (header::rows) in
   print_newline ();
   print_string out;
-  let oc = open_out "grades.csv" in
-  output_string oc out;
-  close_out oc
+  File.write "grades.csv" out;
+  (*
+  (* Grades with formulas. *)
+  begin
+    let coefficients = ""::(A.coefficient a |> string_of_float)::(List.map A.Q.points (A.questions a) |> List.map string_of_float) in
+    CSV.to_string (header::coefficients::rows) |> File.write "grades-formulas.csv"
+  end
+  *)
