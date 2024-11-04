@@ -14,20 +14,20 @@ jobs:
       run: dune runtest
     - name: Build doc
       run: dune build @doc
-    # - name: Upload website artifact
-      # uses: actions/upload-pages-artifact@v2
-      # with:
-        # path: docs
-  # deploy:
-    # needs: build
-    # permissions:
-      # pages: write
-      # id-token: write
-    # environment:
-      # name: github-pages
-      # url: ${{ steps.deployment.outputs.page_url }}
-    # runs-on: ubuntu-latest
-    # steps:
-      # - name: Deploy website
-        # id: deployment
-        # uses: actions/deploy-pages@v2
+    - name: Upload website artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: _build/default/_doc/_html
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v2
