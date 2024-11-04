@@ -12,7 +12,10 @@ module CSV = struct
 
   let row i = i+1
 
-  let column i = (int_of_char 'A' + i) |> char_of_int |> String.make 1
+  let column i =
+    let char i = (int_of_char 'A' + i) |> char_of_int |> String.make 1 in
+    if i < 26 then char i
+    else (char (i / 26 - 1))^(char (i mod 26))
 
   let of_file f =
     let f = open_in f in
