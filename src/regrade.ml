@@ -8,20 +8,25 @@ let () =
   let files = ref [] in
   let extension = ref None in
   let formulas = ref false in
+  let round = ref 0.5 in
   let outfile = ref "grades.csv" in
   Arg.parse
-    [
-      "--extension", Arg.String (fun s -> extension := Some s), "Extension of files to consider.";
-      "--formulas", Arg.Set formulas, "Create a csv with formulas.";
-      "-o", Arg.Set_string outfile, "Output file.";
-    ]
+    (Arg.align
+       [
+         "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
+         "--formulas", Arg.Set formulas, " Create a csv with formulas.";
+         "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
+         "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
+       ]
+    )
     (fun s ->
        if !csv = "" then csv := s
        else files := s :: !files
     )
-    "regrade configuration files";
+    "regrade configuration [files]";
   let csv = !csv in
   let extension = !extension in
+  let round = !round in
   let files = List.rev !files in
   let files =
     if files = [] then
@@ -53,6 +58,8 @@ let () =
              ) a.A.questions
          in
          let grade = A.coefficient a *. List.fold_left (+.) 0. q in
+         let grade = min (A.maximum a) grade in
+         let grade = Float.round (grade /. round) *. round in
          let grade = string_of_float grade in
          fname::grade::(List.map string_of_float q)
       ) files
@@ -72,7 +79,7 @@ let () =
              match row with
              | name::_grade::grades ->
                let n = List.length grades in
-               let grade = Printf.sprintf "=SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2" (CSV.column (n+2)) (i+3) (CSV.column (n+2)) (i+3) in
+               let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2);0.5)" (A.maximum a |> string_of_float) (CSV.column (n+2)) (i+3) (CSV.column (n+2)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
                name::grade::grades
              | _ -> assert false
