@@ -17,7 +17,7 @@ where the signification of the lines is the following
 - `name`: name of the exam,
 - `maximum`: maximum grade (20 if not specified),
 - `question`: name of each question,
-- `regexp`: regexp for correcting each question,
+- `regexp`: regexp for correcting each question (in [OCaml format](https://ocaml.org/manual/5.2/api/Str.html)),
 - `points`: number of points for each question (1 if not specified).
 
 You can then run a command of the form
