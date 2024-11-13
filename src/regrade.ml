@@ -10,12 +10,14 @@ let () =
   let formulas = ref false in
   let round = ref 0.5 in
   let outfile = ref "grades.csv" in
+  let exclude_zero = ref true in
   Arg.parse
     (Arg.align
        [
          "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
+         "--include-zero", Arg.Unit (fun () -> exclude_zero := false), " Consider files graded zero as valid (they are excluded by default).";
          "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
        ]
     )
@@ -41,8 +43,9 @@ let () =
   let csv = CSV.of_file csv in
   let a = A.of_csv ~name csv in
   info "Loaded %s (%.02f points, %.02f coef)" (A.name a) (A.maximum a) (A.coefficient a);
+  let final_grades = ref [] in
   let rows =
-    List.map
+    List.filter_map
       (fun fname ->
          info "Grading %s" fname;
          let files =
@@ -60,14 +63,18 @@ let () =
          let grade = A.coefficient a *. List.fold_left (+.) 0. q in
          let grade = min (A.maximum a) grade in
          let grade = Float.round (grade /. round) *. round in
+         final_grades := grade :: !final_grades;
          let grade = string_of_float grade in
-         fname::grade::(List.map string_of_float q)
+         if List.for_all (fun x -> x = 0.) q then None
+         else Some (fname::grade::(List.map string_of_float q))
       ) files
   in
   let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
   let out = CSV.to_string (header::rows) in
   print_newline ();
   print_string out;
+  print_newline ();
+  Printf.printf "Average is %.02f\n%!" (List.average !final_grades);
   let out =
     if not !formulas then out
     else

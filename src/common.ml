@@ -65,6 +65,13 @@ module File = struct
     close_out oc
 end
 
+module List = struct
+  include List
+
+  let average l =
+    List.fold_left (+.) 0. l /. float (List.length l)
+end
+
 module Str = struct
   include Str
 
