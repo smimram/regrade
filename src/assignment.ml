@@ -6,11 +6,14 @@ module Question = struct
   type t =
     {
       name : string;
+      regexp_string : string;
       regexp : Str.regexp;
       points : float;
     }
 
   let name q = q.name
+
+  let regexp_string q = q.regexp_string
   
   let points q = q.points
 end
@@ -41,7 +44,7 @@ let of_csv ?(name="") rows =
         | "maximum" -> maximum := float_of_string (List.hd l)
         | "coefficient" -> coefficient := Some (float_of_string (List.hd l))
         | "question" -> question := l
-        | "regexp" -> regexp := List.map Str.regexp l
+        | "regexp" -> regexp := l
         | "points" -> points := List.map (fun x -> if x = "" then 1. else float_of_string x) l
         | k -> warning "Unhandled row: %s" k
     ) rows;
@@ -50,7 +53,7 @@ let of_csv ?(name="") rows =
   let points = List.append !points (List.init (n - List.length !points) (fun _ -> 1.)) in
   let questions =
     let rec aux = function
-      | q::q', g::g', p::p' -> { Q.name = q; regexp = g; points = p } :: aux (q', g', p')
+      | q::q', g::g', p::p' -> { Q.name = q; regexp_string = g; regexp = Str.regexp g; points = p } :: aux (q', g', p')
       | [], [], [] -> []
       | _ -> assert false
     in

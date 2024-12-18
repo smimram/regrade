@@ -8,6 +8,7 @@ let () =
   let files = ref [] in
   let extension = ref None in
   let formulas = ref false in
+  let show_regexp = ref false in
   let round = ref 0.5 in
   let outfile = ref "grades.csv" in
   let exclude_zero = ref true in
@@ -16,6 +17,7 @@ let () =
        [
          "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
+         "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
          "--include-zero", Arg.Unit (fun () -> exclude_zero := false), " Consider files graded zero as valid (they are excluded by default).";
          "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
@@ -70,6 +72,11 @@ let () =
       ) files
   in
   let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
+  let rows =
+    if not !show_regexp then rows else
+      let re = ""::""::(List.map A.Q.regexp_string (A.questions a)) in
+      re::rows
+  in
   let out = CSV.to_string (header::rows) in
   print_newline ();
   print_string out;
