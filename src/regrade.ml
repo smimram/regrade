@@ -11,11 +11,13 @@ let () =
   let show_regexp = ref false in
   let round = ref 0.5 in
   let outfile = ref "grades.csv" in
+  let exclude = ref [] in
   let exclude_zero = ref true in
   Arg.parse
     (Arg.align
        [
          "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
+         "--exclude", Arg.String (fun s -> exclude := Str.regexp (s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
          "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
@@ -36,6 +38,7 @@ let () =
     if files = [] then
       let l = Sys.readdir "." |> Array.to_list |> List.sort compare in
       let l = match extension with Some ext -> List.filter (fun f -> try Sys.is_directory f || String.ends_with ~suffix:ext f with Sys_error _ -> false) l | None -> l in
+      let l = List.filter (fun f -> not (List.exists (fun re -> Str.string_match re (Filename.basename f) 0) !exclude)) l in
       l
     else files
   in
