@@ -60,7 +60,7 @@ let of_csv ?(name="") rows =
     List.map4
       (fun q r f p ->
          let file = if f = "" then Re.compile Re.empty else Re.Posix.compile_pat ("^"^f^"$") in
-         let regexp = if r = "" then Re.compile Re.empty else Re.Posix.compile_pat r in
+         let regexp = if r = "" then Re.compile Re.empty else Re.Posix.compile_pat ~opts:[`Newline] r in
         { Q.name = q; regexp_string = r; regexp; file; points = p }
       ) !question !regexp file points
   in
