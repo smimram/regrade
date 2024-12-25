@@ -7,8 +7,8 @@ module Question = struct
     {
       name : string;
       regexp_string : string;
-      regexp : Str.regexp;
-      file : Str.regexp option;
+      regexp : Re.re;
+      file : Re.re;
       points : float;
     }
 
@@ -59,8 +59,8 @@ let of_csv ?(name="") rows =
   let questions =
     List.map4
       (fun q r f p ->
-         let file = if f = "" then None else Some (Str.regexp (f^"$")) in
-         let regexp = if r = "" then Str.regexp_string "#$#$#$#$#" (* empty regexp *) else Str.regexp r in
+         let file = if f = "" then Re.compile Re.empty else Re.Posix.compile_pat ("^"^f^"$") in
+         let regexp = if r = "" then Re.compile Re.empty else Re.Posix.compile_pat r in
         { Q.name = q; regexp_string = r; regexp; file; points = p }
       ) !question !regexp file points
   in

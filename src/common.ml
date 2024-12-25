@@ -80,11 +80,3 @@ module List = struct
   let pad n d l =
     List.append l (List.init (n - List.length l) (fun _ -> d))
 end
-
-module Str = struct
-  include Str
-
-  let string_match_forward regexp s off =
-    try ignore (search_forward regexp s off); true
-    with Not_found -> false
-end

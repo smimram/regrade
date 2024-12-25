@@ -1,6 +1,6 @@
 (executable
  (public_name regrade)
- (libraries str csv)
+ (libraries csv re)
 )
 
 (rule

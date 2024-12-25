@@ -12,5 +12,6 @@
  (description "Simple grading system based on regular expressions.")
  (depends
    csv
+   re
  )
 )

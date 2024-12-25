@@ -7,7 +7,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - name: Install required packages
-      run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc libcsv-ocaml-dev
+      run: sudo apt-get -y install ocaml ocaml-dune ocaml-odoc libcsv-ocaml-dev libre-ocaml-dev
     - name: Build
       run: dune build
     - name: Test

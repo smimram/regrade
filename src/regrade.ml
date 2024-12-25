@@ -17,7 +17,7 @@ let () =
     (Arg.align
        [
          "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
-         "--exclude", Arg.String (fun s -> exclude := Str.regexp (s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
+         "--exclude", Arg.String (fun s -> exclude := Re.Posix.compile_pat ("^"^s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
          "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
@@ -38,7 +38,7 @@ let () =
     if files = [] then
       let l = Sys.readdir "." |> Array.to_list |> List.sort compare in
       let l = match extension with Some ext -> List.filter (fun f -> try Sys.is_directory f || String.ends_with ~suffix:ext f with Sys_error _ -> false) l | None -> l in
-      let l = List.filter (fun f -> not (List.exists (fun re -> Str.string_match re (Filename.basename f) 0) !exclude)) l in
+      let l = List.filter (fun f -> not (List.exists (fun re -> Re.execp re (Filename.basename f)) !exclude)) l in
       l
     else files
   in
@@ -62,12 +62,8 @@ let () =
            List.map
              (fun q ->
                 let regexp = q.A.Q.regexp in
-                let has_file =
-                  match q.A.Q.file with
-                  | Some file -> List.exists (fun fname -> Str.string_match file (Filename.basename fname) 0) files
-                  | None -> false
-                in
-                if has_file || Str.string_match_forward regexp f 0 then q.A.Q.points else 0.
+                let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
+                if has_file || Re.execp regexp f then q.A.Q.points else 0.
              ) a.A.questions
          in
          let grade = A.coefficient a *. List.fold_left (+.) 0. q in

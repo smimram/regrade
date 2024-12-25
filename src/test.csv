@@ -1,4 +1,4 @@
 name,Test
-question,Q1,Q2,Q3
-regexp,module,bla,
-file,,,regrade\.ml
+question,Q1,Q2,Q3,Q4
+regexp,module,bla,(average|bla),
+file,,,,regrade\.ml
