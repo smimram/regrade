@@ -62,7 +62,12 @@ let () =
            List.map
              (fun q ->
                 let regexp = q.A.Q.regexp in
-                if Str.string_match_forward regexp f 0 then q.A.Q.points else 0.
+                let has_file =
+                  match q.A.Q.file with
+                  | Some file -> List.exists (fun fname -> Str.string_match file (Filename.basename fname) 0) files
+                  | None -> false
+                in
+                if has_file || Str.string_match_forward regexp f 0 then q.A.Q.points else 0.
              ) a.A.questions
          in
          let grade = A.coefficient a *. List.fold_left (+.) 0. q in

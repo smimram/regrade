@@ -18,6 +18,7 @@ where the signification of the lines is the following
 - `maximum`: maximum grade (20 if not specified),
 - `question`: name of each question,
 - `regexp`: regexp for correcting each question (in [OCaml format](https://ocaml.org/manual/5.2/api/Str.html)),
+- `file`: give points when there is a file whose name matches the regular expression,
 - `points`: number of points for each question (1 if not specified).
 
 You can then run a command of the form

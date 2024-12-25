@@ -70,6 +70,15 @@ module List = struct
 
   let average l =
     List.fold_left (+.) 0. l /. float (List.length l)
+
+  let rec map4 f l1 l2 l3 l4 =
+    match (l1, l2, l3, l4) with
+    | x1::l1, x2::l2, x3::l3, x4::l4 -> (f x1 x2 x3 x4)::(map4 f l1 l2 l3 l4)
+    | [], [], [], [] -> []
+    | _ -> assert false
+
+  let pad n d l =
+    List.append l (List.init (n - List.length l) (fun _ -> d))
 end
 
 module Str = struct
