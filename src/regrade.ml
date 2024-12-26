@@ -13,6 +13,7 @@ let () =
   let outfile = ref "grades.csv" in
   let exclude = ref [] in
   let exclude_zero = ref true in
+  let verbose = ref false in
   Arg.parse
     (Arg.align
        [
@@ -22,6 +23,7 @@ let () =
          "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);
          "--include-zero", Arg.Unit (fun () -> exclude_zero := false), " Consider files graded zero as valid (they are excluded by default).";
+         "--verbose", Arg.Set verbose, " Be more verbose.";
          "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
        ]
     )
@@ -57,6 +59,7 @@ let () =
            if Sys.is_directory fname then File.find ?extension fname
            else [fname]
          in
+         if !verbose then List.iter (debug "Considering %s") files;
          let f = List.map File.contents files |> String.concat "\n" in
          let q =
            List.map

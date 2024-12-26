@@ -7,6 +7,9 @@ let warning fmt =
 let info fmt =
   Printf.ksprintf (fun s -> Printf.printf "[II] %s\n%!" s) fmt
 
+let debug fmt =
+  Printf.ksprintf (fun s -> Printf.printf "[DD] %s\n%!" s) fmt
+
 module CSV = struct
   include Csv
 
