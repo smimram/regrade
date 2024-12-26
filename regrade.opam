@@ -3,8 +3,9 @@ opam-version: "2.0"
 version: "0.1.0"
 synopsis: "Automatic homework grader"
 description: "Simple grading system based on regular expressions."
+maintainer: ["Samuel Mimram <smimram@gmail.com>"]
 authors: ["Samuel Mimram <smimram@gmail.com>"]
-license: "GPL-3.0"
+license: "GPL-3.0-only"
 homepage: "https://github.com/smimram/regrade"
 bug-reports: "https://github.com/smimram/regrade/issues"
 depends: [

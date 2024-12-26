@@ -3,7 +3,8 @@
 (version 0.1.0)
 (source (github smimram/regrade))
 (authors "Samuel Mimram <smimram@gmail.com>")
-(license GPL-3.0)
+(maintainers "Samuel Mimram <smimram@gmail.com>")
+(license GPL-3.0-only)
 (generate_opam_files)
 
 (package
