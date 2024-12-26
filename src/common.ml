@@ -41,7 +41,7 @@ module File = struct
     close_in f;
     s
 
-  let rec find ?(recursive=true) ?extension dir =
+  let rec find ?(recursive=true) dir =
     let l = Sys.readdir dir |> Array.to_list |> List.map (fun f -> if dir = "." then f else Filename.concat dir f) in
     let l =
       if recursive then
@@ -54,13 +54,7 @@ module File = struct
       else
         List.filter (fun f -> not (Sys.is_directory f)) l
     in
-    let l =
-      match extension with
-      | Some ext -> List.filter (String.ends_with ~suffix:ext ) l
-      | None -> l
-    in
-    let l = List.sort compare l in
-    l
+    List.sort compare l
 
   let write fname s =
     let oc = open_out fname in

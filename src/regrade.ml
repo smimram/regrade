@@ -6,7 +6,7 @@ let () =
   Printexc.record_backtrace true;
   let csv = ref "" in
   let files = ref [] in
-  let extension = ref None in
+  let extensions = ref [] in
   let formulas = ref false in
   let show_regexp = ref false in
   let round = ref 0.5 in
@@ -17,7 +17,7 @@ let () =
   Arg.parse
     (Arg.align
        [
-         "--extension", Arg.String (fun s -> extension := Some s), " Extension of files to consider.";
+         "--extension", Arg.String (fun s -> extensions := s :: !extensions), " Extension of files to consider.";
          "--exclude", Arg.String (fun s -> exclude := Re.Posix.compile_pat ("^"^s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
          "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
@@ -33,13 +33,17 @@ let () =
     )
     "regrade configuration [files]";
   let csv = !csv in
-  let extension = !extension in
+  let extensions = !extensions in
+  let filter_extension fnames =
+    if extensions = [] then fnames else
+      List.filter (fun f -> try Sys.is_directory f || List.exists (fun ext -> String.ends_with ~suffix:ext f) extensions with Sys_error _ -> false) fnames
+  in
   let round = !round in
   let files = List.rev !files in
   let files =
     if files = [] then
       let l = Sys.readdir "." |> Array.to_list |> List.sort compare in
-      let l = match extension with Some ext -> List.filter (fun f -> try Sys.is_directory f || String.ends_with ~suffix:ext f with Sys_error _ -> false) l | None -> l in
+      let l = filter_extension l in
       let l = List.filter (fun f -> not (List.exists (fun re -> Re.execp re (Filename.basename f)) !exclude)) l in
       l
     else files
@@ -56,9 +60,10 @@ let () =
       (fun fname ->
          info "Grading %s" fname;
          let files =
-           if Sys.is_directory fname then File.find ?extension fname
+           if Sys.is_directory fname then File.find fname
            else [fname]
          in
+         let files = filter_extension files in
          if !verbose then List.iter (debug "Considering %s") files;
          let f = List.map File.contents files |> String.concat "\n" in
          let q =
