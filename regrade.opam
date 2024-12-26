@@ -10,6 +10,7 @@ bug-reports: "https://github.com/smimram/regrade/issues"
 depends: [
   "dune" {>= "2.9"}
   "csv"
+  "re"
   "odoc" {with-doc}
 ]
 build: [
