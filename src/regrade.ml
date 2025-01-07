@@ -18,7 +18,7 @@ let () =
     (Arg.align
        [
          "--extension", Arg.String (fun s -> extensions := s :: !extensions), " Extension of files to consider.";
-         "--exclude", Arg.String (fun s -> exclude := Re.Posix.compile_pat ("^"^s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
+         "--exclude", Arg.String (fun s -> exclude := Re.Pcre.regexp ("^"^s^"$") :: !exclude), " Exclude files whose name match the given regexp.";
          "--formulas", Arg.Set formulas, " Create a csv with formulas.";
          "--show-regexp", Arg.Set show_regexp, " Show regular expressions.";
          "--round", Arg.Set_float round, Printf.sprintf " Round notes (default: %s)." (string_of_float !round);

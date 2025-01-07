@@ -17,7 +17,7 @@ where the signification of the lines is the following
 - `name`: name of the exam,
 - `maximum`: maximum grade (20 if not specified),
 - `question`: name of each question,
-- `regexp`: regexp for correcting each question (in POSIX format),
+- `regexp`: regexp for correcting each question (in [PCRE format](https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions)),
 - `file`: give points when there is a file whose name matches the regular expression,
 - `points`: number of points for each question (1 if not specified).
 
