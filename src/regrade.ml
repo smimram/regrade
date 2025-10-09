@@ -98,7 +98,7 @@ let () =
     if not !formulas then out
     else
       (* Grades with formulas. *)
-      let coef = Printf.sprintf "=MROUND(%s/SUM(C2:%s2);0.5)" (A.maximum a |> string_of_float) (CSV.column (A.questions a |> List.length |> Int.succ)) in
+      let coef = Printf.sprintf "=MROUND(%s/SUM(C2:%s2),0.5)" (A.maximum a |> string_of_float) (CSV.column (A.questions a |> List.length |> Int.succ)) in
       let coefficients = ""::coef::(List.map A.Q.points (A.questions a) |> List.map string_of_float) in
       let rows =
         List.mapi
@@ -106,7 +106,7 @@ let () =
              match row with
              | name::_grade::grades ->
                let n = List.length grades in
-               let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2;C%d:%s%d)*$B$2);0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
+               let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2,C%d:%s%d)*$B$2),0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
                name::grade::grades
              | _ -> assert false
