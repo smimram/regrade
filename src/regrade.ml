@@ -98,7 +98,7 @@ let () =
     if not !formulas then out
     else
       (* Grades with formulas. *)
-      let coef = Printf.sprintf "=MROUND(%s/SUM(C2:%s2),0.5)" (A.maximum a |> string_of_float) (CSV.column (A.questions a |> List.length |> Int.succ)) in
+      let coef = Printf.sprintf "=MROUND(%s/SUM(C2:%s2),0.01)" (A.maximum a |> string_of_float) (CSV.column (A.questions a |> List.length |> Int.succ)) in
       let coefficients = ""::coef::(List.map A.Q.points (A.questions a) |> List.map string_of_float) in
       let rows =
         List.mapi
