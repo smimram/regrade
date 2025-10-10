@@ -51,7 +51,7 @@ let () =
     else files
   in
   let sed =
-    let re = Re.compile @@ Re.seq [Re.bos; Re.str "s/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.eos] in
+    let re = Re.compile @@ Re.seq [Re.bos; Re.str "s/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.opt @@ Re.str "g"; Re.eos] in
     List.map
       (fun s ->
          let g = Re.exec re s in
