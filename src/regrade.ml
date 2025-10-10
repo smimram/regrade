@@ -54,7 +54,12 @@ let () =
     let re = Re.compile @@ Re.seq [Re.bos; Re.str "s/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.opt @@ Re.str "g"; Re.eos] in
     List.map
       (fun s ->
-         let g = Re.exec re s in
+         let g =
+           try Re.exec re s
+           with Not_found ->
+             Printf.printf "Invalid sed expression: %s\n%!" s;
+             exit 1
+         in
          (Re.compile @@ Re.Posix.re @@ Re.Group.get g 1), Re.Group.get g 2
       ) @@ List.rev !sed
   in
