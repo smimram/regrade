@@ -14,6 +14,7 @@ let () =
   let exclude = ref [] in
   let exclude_zero = ref true in
   let verbose = ref false in
+  let sed = ref [] in
   Arg.parse
     (Arg.align
        [
@@ -25,6 +26,7 @@ let () =
          "--include-zero", Arg.Unit (fun () -> exclude_zero := false), " Consider files graded zero as valid (they are excluded by default).";
          "--verbose", Arg.Set verbose, " Be more verbose.";
          "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
+         "--sed", Arg.String (fun s -> sed := s :: !sed), " Apply a substitution (s/bla/bli/) to filenames.";
        ]
     )
     (fun s ->
@@ -47,6 +49,14 @@ let () =
       let l = List.filter (fun f -> not (List.exists (fun re -> Re.execp re (Filename.basename f)) !exclude)) l in
       l
     else files
+  in
+  let sed =
+    let re = Re.compile @@ Re.seq [Re.bos; Re.str "s/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.eos] in
+    List.map
+      (fun s ->
+         let g = Re.exec re s in
+         (Re.compile @@ Re.Posix.re @@ Re.Group.get g 1), Re.Group.get g 2
+      ) !sed
   in
   if csv = "" then error "Please provide a configuration file.";
   info "Reading %s" csv;
@@ -105,6 +115,7 @@ let () =
           (fun i row ->
              match row with
              | name::_grade::grades ->
+               let name = List.fold_left (fun name (re,by) -> Re.replace_string re ~by name) name sed in
                let n = List.length grades in
                let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2,C%d:%s%d)*$B$2),0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
