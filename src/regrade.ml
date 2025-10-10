@@ -56,7 +56,7 @@ let () =
       (fun s ->
          let g = Re.exec re s in
          (Re.compile @@ Re.Posix.re @@ Re.Group.get g 1), Re.Group.get g 2
-      ) !sed
+      ) @@ List.rev !sed
   in
   if csv = "" then error "Please provide a configuration file.";
   info "Reading %s" csv;
