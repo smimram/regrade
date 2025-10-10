@@ -98,7 +98,7 @@ let () =
          let grade = string_of_float grade in
          let fname =
            if not !filename_to_utf8 then fname
-           else String.replace_all ["+�","ç"] fname
+           else String.replace_all ["\x2b\xba","ç"] fname
          in
          let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
          if List.for_all (fun x -> x = 0.) q then None
