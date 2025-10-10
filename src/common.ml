@@ -77,3 +77,25 @@ module List = struct
   let pad n d l =
     List.append l (List.init (n - List.length l) (fun _ -> d))
 end
+
+module String = struct
+  include String
+
+  (* TODO: more efficient *)
+  let replace_all l s =
+    let drop n s = String.sub s n (String.length s - n) in
+    let rec aux s =
+      if s = "" then "" else
+        match
+          List.find_map
+            (fun (src,tgt) ->
+               if String.starts_with ~prefix:src s
+               then Some (tgt ^ aux @@ drop (String.length src) s)
+               else None
+            ) l
+        with
+        | Some s -> s
+        | None -> String.sub s 0 1 ^ aux @@ drop 1 s
+    in
+    aux s
+end

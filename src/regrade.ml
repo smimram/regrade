@@ -15,6 +15,7 @@ let () =
   let exclude_zero = ref true in
   let verbose = ref false in
   let sed = ref [] in
+  let filename_to_utf8 = ref false in
   Arg.parse
     (Arg.align
        [
@@ -27,6 +28,7 @@ let () =
          "--verbose", Arg.Set verbose, " Be more verbose.";
          "-o", Arg.Set_string outfile, Printf.sprintf " Output file (default: %s)." !outfile;
          "--sed", Arg.String (fun s -> sed := s :: !sed), " Apply a substitution (s/bla/bli/) to filenames.";
+         "--filename-to-utf8", Arg.Set filename_to_utf8, " Try to convert filename to valid utf8.";
        ]
     )
     (fun s ->
@@ -94,6 +96,10 @@ let () =
          let grade = Float.round (grade /. round) *. round in
          final_grades := grade :: !final_grades;
          let grade = string_of_float grade in
+         let fname =
+           if not !filename_to_utf8 then fname
+           else String.replace_all ["+�","ç"] fname
+         in
          let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
          if List.for_all (fun x -> x = 0.) q then None
          else Some (fname::grade::(List.map string_of_float q))
