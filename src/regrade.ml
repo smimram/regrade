@@ -89,6 +89,7 @@ let () =
          let grade = Float.round (grade /. round) *. round in
          final_grades := grade :: !final_grades;
          let grade = string_of_float grade in
+         let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
          if List.for_all (fun x -> x = 0.) q then None
          else Some (fname::grade::(List.map string_of_float q))
       ) files
@@ -115,7 +116,6 @@ let () =
           (fun i row ->
              match row with
              | name::_grade::grades ->
-               let name = List.fold_left (fun name (re,by) -> Re.replace_string re ~by name) name sed in
                let n = List.length grades in
                let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2,C%d:%s%d)*$B$2),0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
