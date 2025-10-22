@@ -12,6 +12,7 @@
  (synopsis "Automatic homework grader")
  (description "Simple grading system based on regular expressions.")
  (depends
+   (ocaml (>= 4.10))
    csv
    re
  )

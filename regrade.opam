@@ -10,6 +10,7 @@ homepage: "https://github.com/smimram/regrade"
 bug-reports: "https://github.com/smimram/regrade/issues"
 depends: [
   "dune" {>= "2.9"}
+  "ocaml" {>= "4.10"}
   "csv"
   "re"
   "odoc" {with-doc}
