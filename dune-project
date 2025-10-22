@@ -14,6 +14,6 @@
  (depends
    (ocaml (>= 4.10))
    csv
-   re
+   (re (>= 1.1.0))
  )
 )
