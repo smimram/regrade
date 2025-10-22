@@ -3,3 +3,6 @@ all:
 
 install:
 	@dune install
+
+test:
+	@dune runtest
