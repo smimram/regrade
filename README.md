@@ -29,4 +29,9 @@ regrade exam.csv file1 file file3
 
 and it will grade the various files, outputting the results in `grades.csv`. If a folder is given instead of a file, all the files it contains are considered as one homework.
 
-When using the `--formulas` flag, a csv containing Excel formulas will be generated (so that the coefficients can easily be modified).
+Useful commandline options include
+
+- `--exclude`: exclude files whose name match the given regexp
+- `--extension`: only consider file with given extension
+- `--formulas`: generate a csv containing Excel formulas (so that the coefficients can easily be modified)
+- `--sed`: apply a substitution (of the form `s/bla/bli/`) on filenames displayed in the generated csv, which can be useful to normalize those
