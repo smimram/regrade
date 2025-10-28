@@ -2,6 +2,8 @@
 
 This is a simple program to automatically grade homework. Each question is validated by looking a whether the file matches a regular expression. It can be useful as a first approximation of the correction, or in cases where tests are sufficient to ensure the validity of the answers.
 
+## Usage
+
 The correction is specified by a csv file of the form
 
 ```csv
@@ -35,3 +37,11 @@ Useful commandline options include
 - `--extension`: only consider file with given extension
 - `--formulas`: generate a csv containing Excel formulas (so that the coefficients can easily be modified)
 - `--sed`: apply a substitution (of the form `s/bla/bli/`) on filenames displayed in the generated csv, which can be useful to normalize those
+
+## Installation
+
+In order to install, simply type
+
+```bash
+opam install regrade
+```
