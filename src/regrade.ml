@@ -89,10 +89,10 @@ let () =
             (fun q ->
               let regexp = q.A.Q.regexp in
               let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
-              if has_file || Re.execp regexp f then (has_answered := true; q.A.Q.points) else 0.
+              if has_file || Re.execp regexp f then (has_answered := true; Some q.A.Q.points) else None
             ) a.A.questions
         in
-        let grade = A.coefficient a *. List.fold_left (+.) 0. q in
+        let grade = A.coefficient a *. (List.fold_left (+.) 0. @@ List.map (Option.value ~default:0.) q) in
         let grade = min (A.maximum a) grade in
         let grade = Float.round (grade /. round) *. round in
         final_grades := grade :: !final_grades;
@@ -102,6 +102,11 @@ let () =
           else String.replace_all ["\x2b\xba","ç";"\x2b\xbb","ï"] fname
         in
         let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
+        let string_of_float = function
+          | None -> "0."
+          | Some 0. -> "0.0"
+          | Some x -> string_of_float x
+        in
         if !has_answered then Some (fname::grade::(List.map string_of_float q))
         else None
       ) files
