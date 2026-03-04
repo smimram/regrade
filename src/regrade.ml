@@ -83,15 +83,15 @@ let () =
         let files = filter_extension files in
         if !verbose then List.iter (debug "Considering %s") files;
         let f = List.map File.contents files |> String.concat "\n" in
+        let has_answered = ref false in
         let q =
           List.map
             (fun q ->
               let regexp = q.A.Q.regexp in
               let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
-              if has_file || Re.execp regexp f then q.A.Q.points else 0.
+              if has_file || Re.execp regexp f then (has_answered := true; q.A.Q.points) else 0.
             ) a.A.questions
         in
-        let has_answered = List.exists (fun x -> x <> 0.) q in
         let grade = A.coefficient a *. List.fold_left (+.) 0. q in
         let grade = min (A.maximum a) grade in
         let grade = Float.round (grade /. round) *. round in
@@ -102,7 +102,7 @@ let () =
           else String.replace_all ["\x2b\xba","ç";"\x2b\xbb","ï"] fname
         in
         let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
-        if has_answered then Some (fname::grade::(List.map string_of_float q))
+        if !has_answered then Some (fname::grade::(List.map string_of_float q))
         else None
       ) files
   in
