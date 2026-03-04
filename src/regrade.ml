@@ -91,6 +91,7 @@ let () =
               if has_file || Re.execp regexp f then q.A.Q.points else 0.
             ) a.A.questions
         in
+        let has_answered = List.exists (fun x -> x <> 0.) q in
         let grade = A.coefficient a *. List.fold_left (+.) 0. q in
         let grade = min (A.maximum a) grade in
         let grade = Float.round (grade /. round) *. round in
@@ -101,8 +102,8 @@ let () =
           else String.replace_all ["\x2b\xba","ç";"\x2b\xbb","ï"] fname
         in
         let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
-        if List.for_all (fun x -> x = 0.) q then None
-        else Some (fname::grade::(List.map string_of_float q))
+        if has_answered then Some (fname::grade::(List.map string_of_float q))
+        else None
       ) files
   in
   let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
