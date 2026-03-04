@@ -32,8 +32,8 @@ let () =
        ]
     )
     (fun s ->
-       if !csv = "" then csv := s
-       else files := s :: !files
+      if !csv = "" then csv := s
+      else files := s :: !files
     )
     "regrade configuration [files]";
   let csv = !csv in
@@ -56,13 +56,13 @@ let () =
     let re = Re.compile @@ Re.seq [Re.bos; Re.str "s/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.group @@ Re.rep @@ Re.compl [Re.char '/']; Re.str "/"; Re.opt @@ Re.str "g"; Re.eos] in
     List.map
       (fun s ->
-         let g =
-           try Re.exec re s
-           with Not_found ->
-             Printf.printf "Invalid sed expression: %s\n%!" s;
-             exit 1
-         in
-         (Re.compile @@ Re.Posix.re @@ Re.Group.get g 1), Re.Group.get g 2
+        let g =
+          try Re.exec re s
+          with Not_found ->
+            Printf.printf "Invalid sed expression: %s\n%!" s;
+            exit 1
+        in
+        (Re.compile @@ Re.Posix.re @@ Re.Group.get g 1), Re.Group.get g 2
       ) @@ List.rev !sed
   in
   if csv = "" then error "Please provide a configuration file.";
@@ -75,34 +75,34 @@ let () =
   let rows =
     List.filter_map
       (fun fname ->
-         info "Grading %s" fname;
-         let files =
-           if Sys.is_directory fname then File.find fname
-           else [fname]
-         in
-         let files = filter_extension files in
-         if !verbose then List.iter (debug "Considering %s") files;
-         let f = List.map File.contents files |> String.concat "\n" in
-         let q =
-           List.map
-             (fun q ->
-                let regexp = q.A.Q.regexp in
-                let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
-                if has_file || Re.execp regexp f then q.A.Q.points else 0.
-             ) a.A.questions
-         in
-         let grade = A.coefficient a *. List.fold_left (+.) 0. q in
-         let grade = min (A.maximum a) grade in
-         let grade = Float.round (grade /. round) *. round in
-         final_grades := grade :: !final_grades;
-         let grade = string_of_float grade in
-         let fname =
-           if not !filename_to_utf8 then fname
-           else String.replace_all ["\x2b\xba","ç";"\x2b\xbb","ï"] fname
-         in
-         let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
-         if List.for_all (fun x -> x = 0.) q then None
-         else Some (fname::grade::(List.map string_of_float q))
+        info "Grading %s" fname;
+        let files =
+          if Sys.is_directory fname then File.find fname
+          else [fname]
+        in
+        let files = filter_extension files in
+        if !verbose then List.iter (debug "Considering %s") files;
+        let f = List.map File.contents files |> String.concat "\n" in
+        let q =
+          List.map
+            (fun q ->
+              let regexp = q.A.Q.regexp in
+              let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
+              if has_file || Re.execp regexp f then q.A.Q.points else 0.
+            ) a.A.questions
+        in
+        let grade = A.coefficient a *. List.fold_left (+.) 0. q in
+        let grade = min (A.maximum a) grade in
+        let grade = Float.round (grade /. round) *. round in
+        final_grades := grade :: !final_grades;
+        let grade = string_of_float grade in
+        let fname =
+          if not !filename_to_utf8 then fname
+          else String.replace_all ["\x2b\xba","ç";"\x2b\xbb","ï"] fname
+        in
+        let fname = List.fold_left (fun fname (re,by) -> Re.replace_string re ~by fname) fname sed in
+        if List.for_all (fun x -> x = 0.) q then None
+        else Some (fname::grade::(List.map string_of_float q))
       ) files
   in
   let header = "File"::"Grade"::(List.map A.Q.name (A.questions a)) in
@@ -125,13 +125,13 @@ let () =
       let rows =
         List.mapi
           (fun i row ->
-             match row with
-             | name::_grade::grades ->
+            match row with
+            | name::_grade::grades ->
                let n = List.length grades in
                let grade = Printf.sprintf "=MROUND(MIN(%s,SUMPRODUCT($C$2:$%s$2,C%d:%s%d)*$B$2),0.5)" (A.maximum a |> string_of_float) (CSV.column (n+1)) (i+3) (CSV.column (n+1)) (i+3) in
                let grades = List.map (fun x -> if x = "0." then "0." else "1.") grades in
                name::grade::grades
-             | _ -> assert false
+            | _ -> assert false
           ) rows
       in
       CSV.to_string (header::coefficients::rows)
