@@ -82,14 +82,14 @@ let () =
         in
         let files = filter_extension files in
         if !verbose then List.iter (debug "Considering %s") files;
-        let f = List.map File.contents files |> String.concat "\n" in
+        let files = List.map (fun fname -> Filename.basename fname, File.contents fname) files in
         let has_answered = ref false in
         let q =
           List.map
             (fun q ->
-              let regexp = q.A.Q.regexp in
-              let has_file = List.exists (fun fname -> Re.execp q.A.Q.file (Filename.basename fname)) files in
-              if has_file || Re.execp regexp f then (has_answered := true; Some q.A.Q.points) else None
+              if List.exists (fun (fname, contents) -> Re.execp q.A.Q.file fname && Re.execp q.A.Q.regexp contents) files
+              then (has_answered := true; Some q.A.Q.points)
+              else None
             ) a.A.questions
         in
         let grade = A.coefficient a *. (List.fold_left (+.) 0. @@ List.map (Option.value ~default:0.) q) in
